@@ -3,7 +3,7 @@ production:
   port: 1251
   database: aleph_db
   username: username
-  password: username
+  password: password
   library_key: key
 
 development:
@@ -11,5 +11,5 @@ development:
   port: 1251
   database: aleph_db
   username: username
-  password: username
+  password: password
   library_key: key
