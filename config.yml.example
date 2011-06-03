@@ -1,0 +1,15 @@
+production:
+  host: host.domain.unam.mx
+  port: 1251
+  database: aleph_db
+  username: username
+  password: username
+  library_key: key
+
+development:
+  host: host.domain.unam.mx
+  port: 1251
+  database: aleph_db
+  username: username
+  password: username
+  library_key: key
