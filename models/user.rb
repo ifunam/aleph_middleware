@@ -1,5 +1,4 @@
 class User
-  include ActiveModel::AttributeMethods
   include ActiveModel::Validations
   include ActiveModel::Serialization
   include ActiveModel::MassAssignmentSecurity
@@ -8,10 +7,6 @@ class User
   attr_accessor :key, :fullname, :unit, :academic_responsible, :academic_level,
                 :location, :settlement, :municipality, :state, :country, :city,
                 :zipcode, :email, :phone, :expiry_date
-
-  define_attribute_methods [:key, :fullname, :unit, :academic_responsible, :academic_level,
-                :location, :settlement, :municipality, :state, :country, :city,
-                :zipcode, :email, :phone, :expiry_date]
 
   validates_presence_of :key, :fullname, :unit, :academic_level, :location,
                         :country, :city, :zipcode, :email, :phone, :expiry_date
@@ -31,16 +26,16 @@ class User
   def add_account
     @models << Account.new(:key => key, :fullname => fullname, :unit => unit,
                            :academic_responsible => academic_responsible,
-                            :academic_level => academic_level)
+                           :academic_level => academic_level)
   end
 
   def add_addresses
     %w(01 02).each do |address_type|
       @models << Address.new(:key => key, :address_type => address_type, :fullname => fullname,
-                               :location => location, :settlement => settlement,
-                               :municipality => municipality, :state => state, 
-                               :city => city, :country => country, :zipcode => zipcode,
-                               :email => email, :phone => phone)
+                             :location => location, :settlement => settlement,
+                             :municipality => municipality, :state => state, 
+                             :city => city, :country => country, :zipcode => zipcode,
+                             :email => email, :phone => phone)
     end
   end
 
