@@ -1,4 +1,4 @@
-class User < Sequel::Model(:z303)
+class Account < Sequel::Model(:z303)
   class << self
     include Aleph::ColumnHelpers
 
@@ -30,19 +30,19 @@ class User < Sequel::Model(:z303)
 
   def z303_name_key=(string)
     length = key.nil? ? 50 : 38
-    super blank_spaces_as_suffix(string.downcase,length) + key
+    super blank_spaces_as_suffix(string.to_s.downcase,length) + key.to_s
   end
   alias_method :fullname, :z303_name_key
   alias_method :fullname=, :z303_name_key=
 
   def z303_field_1=(string)
-    super string.upcase
+    super string.to_s.upcase
   end
   alias_method :unit, :z303_field_1
   alias_method :unit=, :z303_field_1=
 
   def z303_field_3=(string)
-    super string.upcase
+    super string.to_s.upcase
   end
   alias_method :academic_responsible, :z303_field_3
   alias_method :academic_responsible=, :z303_field_3=

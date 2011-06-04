@@ -20,7 +20,7 @@ class Vigency < Sequel::Model(:z305)
   end
 
   def z305_rec_key=(string)
-    super [blank_spaces_as_suffix(string.upcase,12), blank_spaces_as_suffix(key_suffix.upcase, 5)].compact.join
+    super [blank_spaces_as_suffix(string.to_s.upcase,12), blank_spaces_as_suffix(key_suffix.to_s.upcase, 5)].compact.join
   end
   alias_method :key, :z305_rec_key
   alias_method :key=, :z305_rec_key=
@@ -35,7 +35,7 @@ class Vigency < Sequel::Model(:z305)
   alias_method :unit=, :z305_field_2=
 
   def z305_field_3=(string)
-    super string.upcase
+    super string.to_s.upcase
   end
   alias_method :academic_responsible, :z305_field_3
   alias_method :academic_responsible=, :z305_field_3=

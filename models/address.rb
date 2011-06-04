@@ -20,7 +20,7 @@ class Address < Sequel::Model(:z304)
   end
 
   def validate
-    validates_presence [:key, :address_type, :fullname, :location, :city, :state, :country, :zipcode, :email]
+    validates_presence [:key, :address_type, :fullname, :location, :city, :country, :zipcode, :email]
     validates_unique :z304_rec_key
   end
 
@@ -32,11 +32,11 @@ class Address < Sequel::Model(:z304)
   alias_method :key=, :z304_rec_key=
 
   def fullname=(string)
-    @fullname = blank_spaces_as_suffix(string.upcase, 50)
+    @fullname = blank_spaces_as_suffix(string.to_s.upcase, 50)
   end
 
   def settlement=(string)
-    @settlement = blank_spaces_as_suffix(string.upcase, 50)
+    @settlement = blank_spaces_as_suffix(string.to_s.upcase, 50)
   end
 
   def settlement
@@ -44,7 +44,7 @@ class Address < Sequel::Model(:z304)
   end
 
   def municipality=(string)
-    @municipality = blank_spaces_as_suffix(string.upcase, 50)
+    @municipality = blank_spaces_as_suffix(string.to_s.upcase, 50)
   end
 
   def municipality
