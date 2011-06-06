@@ -1,9 +1,9 @@
 class Address < Sequel::Model(:z304)
   class << self
      include Aleph::ColumnHelpers
-     def all_by_key(key)
-       key_with_suffix = blank_spaces_as_suffix(key.upcase,12)
-       self.where("z304_rec_key = '#{key_with_suffix}01' OR z304_rec_key = '#{key_with_suffix}02'").all
+     def all_by_key(string)
+       key = blank_spaces_as_suffix(string.upcase,12)
+       self.where("z304_rec_key = '#{key}01' OR z304_rec_key = '#{key}02'").all
      end
   end
 
@@ -16,6 +16,8 @@ class Address < Sequel::Model(:z304)
 
   def initialize(*args)
     @address_type = args.first[:address_type] if args.first.is_a? Hash and args.first.has_key? :address_type
+    @state = args.first[:state] if args.first.is_a? Hash and args.first.has_key? :state
+    @state = args.first[:city] if args.first.is_a? Hash and args.first.has_key? :city
     super *args
   end
 
@@ -25,8 +27,7 @@ class Address < Sequel::Model(:z304)
   end
 
   def z304_rec_key=(string)
-     address_type_suffix = @address_type.nil? ? nil : '0'+@address_type.to_s
-    super [blank_spaces_as_suffix(string.upcase,12), address_type_suffix].compact.join
+    super [blank_spaces_as_suffix(string.upcase,12), @address_type].compact.join
   end
   alias_method :key, :z304_rec_key
   alias_method :key=, :z304_rec_key=
@@ -35,29 +36,17 @@ class Address < Sequel::Model(:z304)
     @fullname = blank_spaces_as_suffix(string.to_s.upcase, 50)
   end
 
-  def settlement=(string)
-    @settlement = blank_spaces_as_suffix(string.to_s.upcase, 50)
-  end
-
-  def settlement
-    blank_spaces_as_suffix(@settlement.to_s, 50)
-  end
-
-  def municipality=(string)
-    @municipality = blank_spaces_as_suffix(string.to_s.upcase, 50)
-  end
-
-  def municipality
-    blank_spaces_as_suffix(@municipality.to_s, 50)
+  def settlement_and_municipality
+    blank_spaces_as_suffix([settlement, municipality].compact.join(', ').upcase, 50)
   end
 
   def country_state_and_city
-    blank_spaces_as_suffix([country, state, city].compact.join(', ').upcase, 45)
+    blank_spaces_as_suffix([country, @state, @city].compact.join(', ').upcase, 45)
   end
 
   def z304_address=(string)
-    super [fullname, blank_spaces_as_suffix(string.upcase, 50), settlement,
-           municipality,  country_state_and_city].join
+    super [fullname, blank_spaces_as_suffix(string.upcase, 50), settlement_and_municipality,
+           country_state_and_city].join
   end
   alias_method :location, :z304_address
   alias_method :location=, :z304_address=
