@@ -25,7 +25,6 @@ class Vigency < Sequel::Model(:z305)
   end
 
   def z305_rec_key=(string)
-    p @key_suffix
     super [blank_spaces_as_suffix(string.to_s.upcase,12), blank_spaces_as_suffix(@key_suffix.to_s.upcase, 5)].compact.join
   end
   alias_method :key, :z305_rec_key
