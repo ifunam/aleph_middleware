@@ -14,13 +14,19 @@ class Vigency < Sequel::Model(:z305)
   attr_accessor :key, :key_suffix, :expiry_date, :unit, :academic_responsible
   set_primary_key :z305_rec_key
 
+  def initialize(*args)
+    @key_suffix = args.first[:key_suffix]
+    super *args
+  end
+
   def validate
     validates_presence [:key, :key_suffix, :expiry_date, :unit]
     validates_unique :z305_rec_key
   end
 
   def z305_rec_key=(string)
-    super [blank_spaces_as_suffix(string.to_s.upcase,12), blank_spaces_as_suffix(key_suffix.to_s.upcase, 5)].compact.join
+    p @key_suffix
+    super [blank_spaces_as_suffix(string.to_s.upcase,12), blank_spaces_as_suffix(@key_suffix.to_s.upcase, 5)].compact.join
   end
   alias_method :key, :z305_rec_key
   alias_method :key=, :z305_rec_key=
@@ -39,4 +45,5 @@ class Vigency < Sequel::Model(:z305)
   end
   alias_method :academic_responsible, :z305_field_3
   alias_method :academic_responsible=, :z305_field_3=
+
 end
