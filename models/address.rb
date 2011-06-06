@@ -45,7 +45,7 @@ class Address < Sequel::Model(:z304)
   end
 
   def z304_address=(string)
-    super [fullname, blank_spaces_as_suffix(string.upcase, 50), settlement_and_municipality,
+    super [fullname, blank_spaces_as_suffix(string.to_s.upcase, 50), settlement_and_municipality,
            country_state_and_city].join
   end
   alias_method :location, :z304_address

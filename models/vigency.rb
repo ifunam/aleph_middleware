@@ -34,7 +34,7 @@ class Vigency < Sequel::Model(:z305)
   alias_method :expiry_date=, :z305_expiry_date=
 
   def z305_field_2=(string)
-    super string.upcase
+    super string.to_s.upcase
   end
   alias_method :unit, :z305_field_2
   alias_method :unit=, :z305_field_2=

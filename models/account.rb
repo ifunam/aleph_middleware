@@ -54,7 +54,7 @@ class Account < Sequel::Model(:z303)
   alias_method :library_key=, :z303_home_library=
 
   def z303_title=(string)
-    super blank_spaces_as_suffix(string.upcase, 10)
+    super blank_spaces_as_suffix(string.to_s.upcase, 10)
   end
   alias_method :academic_level, :z303_title
   alias_method :academic_level=, :z303_title=

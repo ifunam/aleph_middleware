@@ -11,6 +11,16 @@ class User
   validates_presence_of :key, :fullname, :unit, :academic_level, :location,
                         :country, :city, :zipcode, :email, :phone, :expiry_date
 
+  def self.first_by_key(key)
+    @user = new(:new_record => false, :key => key)
+    @user.fill_models
+    unless @user.models_empty?
+      @user
+    else 
+      nil
+    end
+  end
+
   def initialize(attributes={})
     @models = []
     self.attributes = attributes
@@ -35,7 +45,18 @@ class User
     end
   end
 
-  private
+  def destroy
+    unless models_empty?
+      @models.each do |record|
+        record.destroy
+      end
+    end
+  end
+
+  def models_empty?
+    @models.compact.empty?
+  end
+  #private
 
   def attributes=(hash)
     sanitize_for_mass_assignment(hash).each do |attribute, value|
@@ -108,6 +129,7 @@ class User
 
   def fill_models
     @models.clear
+    # Check new record bug
     if new_record?
       @models << new_account
       %w(01 02).each do |address_type| @models << new_address(address_type) end
@@ -117,7 +139,7 @@ class User
       @models << Account.first_by_key(key)
       Address.all_by_key(key).each do |address| @models << address end
       KeyChain.all_by_key(key).each do |keychain| @models << keychain end
-      Vigency.all_by_key(key).each do |vigency| @models << keychain end
+      Vigency.all_by_key(key).each do |vigency| @models << vigency end
     end
   end
 end
