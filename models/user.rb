@@ -40,8 +40,17 @@ class User
   def save
     if valid? and new_record?
       save_models
+      @new_record = false
+      return true
     else
       return false
+    end
+  end
+
+  def update(hash={})
+    self.attributes = hash
+    if valid? and !new_record? and !models_empty?
+      update_models
     end
   end
 
@@ -63,23 +72,23 @@ class User
 
   def account_attributes
     { :fullname => fullname, :unit => unit, :academic_responsible => academic_responsible,
-      :academic_level => academic_level, :key => key
+      :academic_level => academic_level
     }
   end
 
   def new_account
-    Account.new account_attributes
+    Account.new account_attributes.merge(:key => key)
   end
 
   def address_attributes
-    { :key => key, :fullname => fullname, :location => location, :settlement => settlement,
+    { :fullname => fullname, :location => location, :settlement => settlement,
       :municipality => municipality, :state => state, :city => city, :country => country,
       :zipcode => zipcode, :email => email, :phone => phone
     }
   end
 
   def new_address(address_type)
-    Address.new address_attributes.merge(:address_type => address_type)
+    Address.new address_attributes.merge(:key => key, :address_type => address_type)
   end
 
   def keychain_attributes
@@ -91,13 +100,11 @@ class User
   end
 
   def vigency_attributes
-    { :key => key, :expiry_date => expiry_date,
-      :unit => unit, :academic_responsible => academic_responsible
-    }
+    { :expiry_date => expiry_date, :unit => unit, :academic_responsible => academic_responsible }
   end
 
   def new_vigency(suffix_key)
-    Vigency.new vigency_attributes.merge(:key_suffix => suffix_key)
+    Vigency.new vigency_attributes.merge(:key => key, :key_suffix => suffix_key)
   end
 
   def new_record?
@@ -123,9 +130,19 @@ class User
 
   def save_models
     @models.each do |model|
-      record_saved = model.save
-      return false unless record_saved
+      model.save
     end
+  end
+
+  def update_models
+    # We don't support updating for :key attribute
+    @models[0].update(account_attributes)
+    @models[1].update(address_attributes)
+    @models[2].update(address_attributes)
+    @models[3].update(keychain_attributes)
+    @models[4].update(keychain_attributes)
+    @models[5].update(vigency_attributes)
+    @models[6].update(vigency_attributes)
   end
 
   def fill_models
