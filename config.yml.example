@@ -5,6 +5,7 @@ production:
   username: username
   password: password
   library_key: key
+  middleware_database: db/aleph_middleware.sqlite3
 
 development:
   host: host.domain.unam.mx
@@ -13,3 +14,4 @@ development:
   username: username
   password: password
   library_key: key
+  middleware_database: db/aleph_middleware.sqlite3
