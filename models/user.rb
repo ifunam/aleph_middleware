@@ -56,7 +56,7 @@ class User
 
   def destroy
     unless models_empty?
-      @models.each do |record|
+      @models.reverse.each do |record|
         record.destroy
       end
     end
@@ -100,11 +100,12 @@ class User
   end
 
   def vigency_attributes
-    { :expiry_date => expiry_date, :unit => unit, :academic_responsible => academic_responsible }
+    { :key => key, :expiry_date => expiry_date, :unit => unit,
+      :academic_responsible => academic_responsible }
   end
 
   def new_vigency(suffix_key)
-    Vigency.new vigency_attributes.merge(:key => key, :key_suffix => suffix_key)
+    Vigency.new vigency_attributes.merge(:key_suffix => suffix_key)
   end
 
   def new_record?
@@ -135,7 +136,7 @@ class User
   end
 
   def update_models
-    # We don't support updating for :key attribute
+    # We don't support updates for :key attribute
     @models[0].update(account_attributes)
     @models[1].update(address_attributes)
     @models[2].update(address_attributes)
