@@ -13,10 +13,10 @@ class User
 
   def self.first_by_key(key)
     @user = new(:new_record => false, :key => key)
-    @user.fill_models
-    unless @user.models_empty?
+    @user.send :fill_models
+    unless @user.send :models_empty?
       @user
-    else 
+    else
       nil
     end
   end
@@ -24,7 +24,7 @@ class User
   def initialize(attributes={})
     @models = []
     self.attributes = attributes
-    self.new_record = attributes[:new_record] || true
+    self.new_record = (attributes.has_key? :new_record and !attributes[:new_record].nil?) ? attributes[:new_record] : true
     self
   end
 
@@ -53,10 +53,7 @@ class User
     end
   end
 
-  def models_empty?
-    @models.compact.empty?
-  end
-  #private
+  private
 
   def attributes=(hash)
     sanitize_for_mass_assignment(hash).each do |attribute, value|
@@ -107,6 +104,10 @@ class User
     @new_record
   end
 
+  def models_empty?
+    @models.compact.empty?
+  end
+
   def models_valid?
     @models.each do |model|
       unless model.valid?
@@ -129,17 +130,42 @@ class User
 
   def fill_models
     @models.clear
-    # Check new record bug
     if new_record?
-      @models << new_account
-      %w(01 02).each do |address_type| @models << new_address(address_type) end
-      %w(01 00).each do |verification_type| @models << new_keychain(verification_type) end
-      ['ALEPH', LIBRARY_KEY].each do |suffix_key| @models << new_vigency(suffix_key) end
+      fill_with_new_records
     else
-      @models << Account.first_by_key(key)
-      Address.all_by_key(key).each do |address| @models << address end
-      KeyChain.all_by_key(key).each do |keychain| @models << keychain end
-      Vigency.all_by_key(key).each do |vigency| @models << vigency end
+      fill_with_existent_records
+    end
+  end
+
+  def fill_with_new_records
+    @models << new_account
+
+    %w(01 02).each do |address_type|
+      @models << new_address(address_type)
+    end
+
+    %w(01 00).each do |verification_type|
+      @models << new_keychain(verification_type)
+    end
+
+    ['ALEPH', LIBRARY_KEY].each do |suffix_key|
+      @models << new_vigency(suffix_key) 
+    end
+  end
+
+  def fill_with_existent_records
+    @models << Account.first_by_key(key)
+
+    Address.all_by_key(key).each do |address|
+      @models << address
+    end
+
+    KeyChain.all_by_key(key).each do |keychain|
+      @models << keychain
+    end
+
+    Vigency.all_by_key(key).each do |vigency|
+      @models << vigency
     end
   end
 end
