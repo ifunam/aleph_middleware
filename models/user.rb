@@ -201,23 +201,27 @@ class User
 
   def existent_account
     @account =  Account.first_by_key(key)
-    self.fullname = @account.fullname
-    self.unit = @account.unit
-    self.academic_level = @account.academic_level
-    self.academic_responsible = @account.academic_responsible
+    unless @account.nil?
+      self.fullname = @account.fullname
+      self.unit = @account.unit
+      self.academic_level = @account.academic_level
+      self.academic_responsible = @account.academic_responsible
+    end
     @account
   end
 
   def existent_address
     @address =  Address.all_by_key(key).first
-    self.location = @address.location
-    self.zipcode = @address.zipcode
-    self.email = @address.email
-    self.phone = @address.phone
+    unless @address.nil?
+      self.location = @address.location
+      self.zipcode = @address.zipcode
+      self.email = @address.email
+      self.phone = @address.phone
+    end
   end
 
   def existent_vigency
     @vigency = Vigency.all_by_key(key).first
-    self.expiry_date = @vigency.expiry_date
+    self.expiry_date = @vigency.expiry_date unless @vigency.nil?
   end
 end
