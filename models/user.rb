@@ -1,6 +1,7 @@
 class User
   include ActiveModel::Validations
   include ActiveModel::Serialization
+  include ActiveModel::Serializers::Xml
   include ActiveModel::MassAssignmentSecurity
   include ActiveModel::Dirty
 
@@ -59,6 +60,15 @@ class User
       @models.reverse.each do |record|
         record.destroy
       end
+    end
+  end
+
+  def attributes
+    [:key, :fullname, :unit, :academic_responsible, :academic_level,
+     :location, :settlement, :municipality, :state, :country, :city,
+     :zipcode, :email, :phone, :expiry_date].inject({}) do |hash, attribute|
+      hash[attribute.to_s] = send(attribute.to_s)
+      hash
     end
   end
 
@@ -172,11 +182,12 @@ class User
   end
 
   def fill_with_existent_records
-    @models << Account.first_by_key(key)
+    @models << existent_account
 
     Address.all_by_key(key).each do |address|
       @models << address
     end
+    existent_address
 
     KeyChain.all_by_key(key).each do |keychain|
       @models << keychain
@@ -185,5 +196,28 @@ class User
     Vigency.all_by_key(key).each do |vigency|
       @models << vigency
     end
+    existent_vigency
+  end
+
+  def existent_account
+    @account =  Account.first_by_key(key)
+    self.fullname = @account.fullname
+    self.unit = @account.unit
+    self.academic_level = @account.academic_level
+    self.academic_responsible = @account.academic_responsible
+    @account
+  end
+
+  def existent_address
+    @address =  Address.all_by_key(key).first
+    self.location = @address.location
+    self.zipcode = @address.zipcode
+    self.email = @address.email
+    self.phone = @address.phone
+  end
+
+  def existent_vigency
+    @vigency = Vigency.all_by_key(key).first
+    self.expiry_date = @vigency.expiry_date
   end
 end
