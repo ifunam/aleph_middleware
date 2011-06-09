@@ -29,7 +29,6 @@ class AlephMiddleware < Sinatra::Base
     end
   end
 
-
   delete '/users/:id' do
     @user = User.first_by_key(params[:id])
     unless @user.nil?

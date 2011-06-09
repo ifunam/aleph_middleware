@@ -3,8 +3,12 @@ require "bundler"
 Bundler.setup
 Bundler.require(:default)
 
-%w(column_helpers database middleware_migration).each do |name|
+%w(column_helpers database).each do |name|
   require "helpers/#{name}"
+end
+
+%w(initial_schema_20110608121212).each do |migration|
+  require "db/migrate/#{migration}"
 end
 
 %w(account address vigency key_chain
