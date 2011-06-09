@@ -10,6 +10,16 @@ class AlephMiddleware < Sinatra::Base
     end
   end
 
+  put '/users/:id' do
+    @user = User.first_by_key(params[:id])
+    @user.update(params[:user])
+    unless @user.errors.count > 0
+      @user.to_xml
+    else
+      @user.errors.to_xml
+    end
+  end
+
   get '/users/:id' do
     @user = User.first_by_key(params[:id])
     unless @user.nil?
@@ -18,6 +28,7 @@ class AlephMiddleware < Sinatra::Base
       not_found("Cannot find user key")
     end
   end
+
 
   delete '/users/:id' do
     @user = User.first_by_key(params[:id])
