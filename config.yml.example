@@ -5,6 +5,9 @@ production:
   username: username
   password: password
   library_key: key
+  ssh_username: alephmw
+  ssh_password: password
+  pics_directory: /remote/directory/to/save/pics
   middleware_database: db/aleph_middleware.sqlite3
 
 development:
@@ -14,4 +17,7 @@ development:
   username: username
   password: password
   library_key: key
+  ssh_username: alephmw
+  ssh_password: password
+  pics_directory: /remote/directory/to/save/pics
   middleware_database: db/aleph_middleware.sqlite3

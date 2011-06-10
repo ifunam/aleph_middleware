@@ -3,7 +3,7 @@ require "bundler"
 Bundler.setup
 Bundler.require(:default)
 
-%w(column_helpers database).each do |name|
+%w(column_helpers setup_helpers database).each do |name|
   require "helpers/#{name}"
 end
 

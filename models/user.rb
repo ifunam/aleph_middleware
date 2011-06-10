@@ -1,3 +1,5 @@
+require 'net/ssh'
+require 'net/sftp'
 class User
   include ActiveModel::Validations
   include ActiveModel::Serialization
@@ -5,6 +7,7 @@ class User
   include ActiveModel::MassAssignmentSecurity
   include ActiveModel::Dirty
 
+  include Aleph::SetupHelpers
   attr_accessor :key, :fullname, :unit, :academic_responsible, :academic_level,
                 :location, :settlement, :municipality, :state, :country, :city,
                 :zipcode, :email, :phone, :expiry_date, :new_record
@@ -223,5 +226,31 @@ class User
   def existent_vigency
     @vigency = Vigency.all_by_key(key).first
     self.expiry_date = @vigency.expiry_date unless @vigency.nil?
+  end
+
+  def upload_picture
+    if File.exist? local_filename
+      Net::SFTP.start(config['host'], config['ssh_username'], :password => config['ssh_password']) do |sftp|
+        sftp.upload!(local_filename, remote_filename)
+      end
+    end
+  end
+
+  def remove_picture
+    Net::SSH.start(config['host'], config['ssh_username'], :password => config['ssh_password']) do |ssh|
+      ssh.exec!("rm #{remote_filename}")
+    end
+  end
+
+  def local_filename
+    'tmp/'+ picture_filename
+  end
+
+  def remote_filename
+    [config['pics_directory'], picture_filename].join('/')
+  end
+
+  def picture_filename
+    key.downcase.strip + '.jpg'
   end
 end
