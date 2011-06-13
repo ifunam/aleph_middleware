@@ -20,12 +20,14 @@ class KeyChain < Sequel::Model(:z308)
 
   def initialize(*args)
     args.first[:z308_encryption] = 'N' if args.first.is_a? Hash
+    @verification_type = args.first[:verification_type] if args.first.is_a? Hash and args.first.has_key? :verification_type
+
     super *args
   end
 
   def z308_rec_key=(string)
      z308_key_id =  string
-     super verification_type.to_s + blank_spaces_as_suffix(string.upcase,25)
+     super @verification_type.to_s + blank_spaces_as_suffix(string.upcase,25)
   end
   alias_method :key, :z308_rec_key
   alias_method :key=, :z308_rec_key=

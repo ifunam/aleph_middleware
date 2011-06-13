@@ -8,9 +8,13 @@ class User
   include ActiveModel::Dirty
 
   include Aleph::SetupHelpers
+
   attr_accessor :key, :fullname, :unit, :academic_responsible, :academic_level,
                 :location, :settlement, :municipality, :state, :country, :city,
-                :zipcode, :email, :phone, :expiry_date, :new_record
+                :zipcode, :email, :phone, :expiry_date, :image, :new_record
+
+  extend CarrierWave::Mount
+  mount_uploader :image, ImageUploader
 
   validates_presence_of :key, :fullname, :unit, :academic_level, :location,
                         :country, :city, :zipcode, :email, :phone, :expiry_date
@@ -44,6 +48,7 @@ class User
   def save
     if valid? and new_record?
       save_models
+      upload_picture
       @new_record = false
       return true
     else
@@ -63,6 +68,7 @@ class User
       @models.reverse.each do |record|
         record.destroy
       end
+      remove_picture
     end
   end
 
@@ -229,9 +235,9 @@ class User
   end
 
   def upload_picture
-    if File.exist? local_filename
+    if File.exist? image.current_path
       Net::SFTP.start(config['host'], config['ssh_username'], :password => config['ssh_password']) do |sftp|
-        sftp.upload!(local_filename, remote_filename)
+        sftp.upload!(image.current_path, remote_filename)
       end
     end
   end
@@ -242,10 +248,6 @@ class User
     end
   end
 
-  def local_filename
-    'tmp/'+ picture_filename
-  end
-
   def remote_filename
     [config['pics_directory'], picture_filename].join('/')
   end
@@ -254,3 +256,4 @@ class User
     key.downcase.strip + '.jpg'
   end
 end
+

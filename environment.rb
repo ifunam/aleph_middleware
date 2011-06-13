@@ -11,6 +11,10 @@ end
   require "db/migrate/#{migration}"
 end
 
+%w(image_uploader).each do |uploader|
+  require "uploaders/#{uploader}"
+end
+
 %w(account address vigency key_chain
    book_lending book_lending_log user
    client transaction).each do |name|
