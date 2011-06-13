@@ -2,3 +2,8 @@ Gemfile.lock
 config.yml
 *.swp
 db/*.sqlite*
+public
+.bundle/
+sinatra.log
+tmp
+uuid
