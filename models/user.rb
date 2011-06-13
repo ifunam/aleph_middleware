@@ -11,7 +11,7 @@ class User
 
   attr_accessor :key, :fullname, :unit, :academic_responsible, :academic_level,
                 :location, :settlement, :municipality, :state, :country, :city,
-                :zipcode, :email, :phone, :expiry_date, :image, :new_record
+                :zipcode, :email, :phone, :expiry_date, :image, :new_record, :id
 
   extend CarrierWave::Mount
   mount_uploader :image, ImageUploader
@@ -33,6 +33,7 @@ class User
     @models = []
     self.attributes = attributes
     self.new_record = (attributes.has_key? :new_record and !attributes[:new_record].nil?) ? attributes[:new_record] : true
+    self.id = attributes[:key].to_s.strip
     self
   end
 

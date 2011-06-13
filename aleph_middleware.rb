@@ -1,7 +1,8 @@
 require 'environment'
 class AlephMiddleware < Sinatra::Base
 
-  post '/users/' do
+  post '/users.xml' do
+    authenticate_with_token!
     @user = User.new(params[:user])
     if @user.save
       @user.to_xml
@@ -10,7 +11,8 @@ class AlephMiddleware < Sinatra::Base
     end
   end
 
-  put '/users/:id' do
+  put '/users/:id.xml' do
+    authenticate_with_token!
     @user = User.first_by_key(params[:id])
     @user.update(params[:user])
     unless @user.errors.count > 0
@@ -20,7 +22,8 @@ class AlephMiddleware < Sinatra::Base
     end
   end
 
-  get '/users/:id' do
+  get '/users/:id.xml' do
+    authenticate_with_token!
     @user = User.first_by_key(params[:id])
     unless @user.nil?
       @user.to_xml
@@ -29,7 +32,8 @@ class AlephMiddleware < Sinatra::Base
     end
   end
 
-  delete '/users/:id' do
+  delete '/users/:id.xml' do
+    authenticate_with_token!
     @user = User.first_by_key(params[:id])
     unless @user.nil?
       @user.destroy
@@ -39,4 +43,8 @@ class AlephMiddleware < Sinatra::Base
     end
   end
 
+  private
+  def authenticate_with_token!
+    error 401 if Client.where(:token => env['HTTP_X_ALEPH_TOKEN']).first.nil?
+  end
 end
