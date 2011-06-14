@@ -57,6 +57,9 @@ class Address < Sequel::Model(:z304)
   alias_method :zipcode, :z304_zip
   alias_method :zipcode=, :z304_zip=
 
+  def z304_address_type=(string)
+    super string.to_i.to_s
+  end
   alias_method :address_type, :z304_address_type
   alias_method :address_type=, :z304_address_type=
 
