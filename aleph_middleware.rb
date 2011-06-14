@@ -44,6 +44,6 @@ class AlephMiddleware < Sinatra::Base
 
   private
   def authenticate_with_token!
-    error 401 if Client.where(:token => env['HTTP_X_ALEPH_TOKEN']).first.nil?
+    error 401 unless Client.authenticate?(env['HTTP_X_ALEPH_TOKEN'])
   end
 end
