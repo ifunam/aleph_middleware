@@ -1,8 +1,10 @@
 require 'environment'
 class AlephMiddleware < Sinatra::Base
+  before do
+    authenticate_with_token!
+  end
 
   post '/users.xml' do
-    authenticate_with_token!
     @user = User.new(params[:user])
     if @user.save
       @user.to_xml
@@ -12,7 +14,6 @@ class AlephMiddleware < Sinatra::Base
   end
 
   put '/users/:id.xml' do
-    authenticate_with_token!
     @user = User.first_by_key(params[:id])
     @user.update(params[:user])
     unless @user.errors.count > 0
@@ -23,7 +24,6 @@ class AlephMiddleware < Sinatra::Base
   end
 
   get '/users/:id.xml' do
-    authenticate_with_token!
     @user = User.first_by_key(params[:id])
     unless @user.nil?
       @user.to_xml
@@ -33,7 +33,6 @@ class AlephMiddleware < Sinatra::Base
   end
 
   delete '/users/:id.xml' do
-    authenticate_with_token!
     @user = User.first_by_key(params[:id])
     unless @user.nil?
       @user.destroy
