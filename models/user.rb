@@ -9,14 +9,14 @@ class User
 
   include Aleph::SetupHelpers
 
-  attr_accessor :key, :fullname, :unit, :academic_responsible, :academic_level,
+  attr_accessor :key, :firstname, :lastname, :unit, :academic_responsible, :academic_level,
                 :location, :settlement, :municipality, :state, :country, :city,
                 :zipcode, :email, :phone, :expiry_date, :image, :new_record, :id
 
   extend CarrierWave::Mount
   mount_uploader :image, ImageUploader
 
-  validates_presence_of :key, :fullname, :unit, :academic_level, :location,
+  validates_presence_of :key, :firstname, :lastname, :unit, :academic_level, :location,
                         :country, :city, :zipcode, :email, :phone, :expiry_date
 
   def self.first_by_key(key)
@@ -74,7 +74,7 @@ class User
   end
 
   def attributes
-    [:key, :fullname, :unit, :academic_responsible, :academic_level,
+    [:key, :firstname, :unit, :academic_responsible, :academic_level,
      :location, :settlement, :municipality, :state, :country, :city,
      :zipcode, :email, :phone, :expiry_date].inject({}) do |hash, attribute|
       hash[attribute.to_s] = send(attribute.to_s)
@@ -91,7 +91,7 @@ class User
   end
 
   def account_attributes
-    { :fullname => fullname, :unit => unit, :academic_responsible => academic_responsible,
+    { :firstname => firstname, :lastname => lastname, :unit => unit, :academic_responsible => academic_responsible,
       :academic_level => academic_level
     }
   end
@@ -101,7 +101,7 @@ class User
   end
 
   def address_attributes
-    { :fullname => fullname, :location => location, :settlement => settlement,
+    { :fullname => [firstname, lastname].join(' '), :location => location, :settlement => settlement,
       :municipality => municipality, :state => state, :city => city, :country => country,
       :zipcode => zipcode, :email => email, :phone => phone
     }
@@ -212,7 +212,8 @@ class User
   def existent_account
     @account =  Account.first_by_key(key)
     unless @account.nil?
-      self.fullname = @account.fullname
+      self.firstname = @account.firstname
+      self.lastname = @account.lastname
       self.unit = @account.unit
       self.academic_level = @account.academic_level
       self.academic_responsible = @account.academic_responsible
@@ -236,7 +237,7 @@ class User
   end
 
   def upload_picture
-    if File.exist? image.current_path
+    if !image.current_path.nil? and File.exist? image.current_path
       Net::SFTP.start(config['host'], config['ssh_username'], :password => config['ssh_password']) do |sftp|
         sftp.upload!(image.current_path, remote_filename)
       end
