@@ -15,7 +15,7 @@ end
   require "uploaders/#{uploader}"
 end
 
-%w(account address vigency key_chain
+%w(person address vigency key_chain
    book_lending book_lending_log user
    client transaction).each do |name|
   require "models/#{name}"

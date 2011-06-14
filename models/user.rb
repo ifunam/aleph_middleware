@@ -90,14 +90,14 @@ class User
     end
   end
 
-  def account_attributes
+  def person_attributes
     { :firstname => firstname, :lastname => lastname, :unit => unit, :academic_responsible => academic_responsible,
       :academic_level => academic_level
     }
   end
 
-  def new_account
-    Account.new account_attributes.merge(:key => key)
+  def new_person
+    Person.new person_attributes.merge(:key => key)
   end
 
   def address_attributes
@@ -157,7 +157,7 @@ class User
 
   def update_models
     # We don't support updates for :key attribute
-    @models[0].update(account_attributes)
+    @models[0].update(person_attributes)
     @models[1].update(address_attributes)
     @models[2].update(address_attributes)
     @models[3].update(keychain_attributes)
@@ -176,7 +176,7 @@ class User
   end
 
   def fill_with_new_records
-    @models << new_account
+    @models << new_person
 
     %w(01 02).each do |address_type|
       @models << new_address(address_type)
@@ -192,7 +192,7 @@ class User
   end
 
   def fill_with_existent_records
-    @models << existent_account
+    @models << existent_person
 
     Address.all_by_key(key).each do |address|
       @models << address
@@ -209,16 +209,16 @@ class User
     existent_vigency
   end
 
-  def existent_account
-    @account =  Account.first_by_key(key)
-    unless @account.nil?
-      self.firstname = @account.firstname
-      self.lastname = @account.lastname
-      self.unit = @account.unit
-      self.academic_level = @account.academic_level
-      self.academic_responsible = @account.academic_responsible
+  def existent_person
+    @person =  Person.first_by_key(key)
+    unless @person.nil?
+      self.firstname = @person.firstname
+      self.lastname = @person.lastname
+      self.unit = @person.unit
+      self.academic_level = @person.academic_level
+      self.academic_responsible = @person.academic_responsible
     end
-    @account
+    @person
   end
 
   def existent_address
