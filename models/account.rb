@@ -9,16 +9,24 @@ class Account < Sequel::Model(:z303)
 
   plugin :validation_helpers
   include Aleph::ColumnHelpers
-  attr_accessor :key, :fullname, :unit, :academic_responsible, :library_key, :academic_level
+  attr_accessor :key, :firstname, :lastname, :unit, :academic_responsible, :library_key, :academic_level
   set_primary_key :z303_rec_key
 
   def initialize(*args)
-    args.first[:library_key] = LIBRARY_KEY if args.first.is_a? Hash and !args.first.has_key? :library_key
+    defaults = { :z303_delinq_3=>0, :z303_con_lng=>"SPA", :library_key=> LIBRARY_KEY,
+                 :z303_ill_library=> blank_spaces_as_suffix(LIBRARY_KEY, 5),
+                 :z303_profile_id => 'ALEPH', :z303_alpha =>"L", :z303_export_consent => "Y",
+                 :z303_send_all_letters => "Y"
+                }
+    args.first.merge!(defaults)
+    @firstname = args.first[:firstname]
+    @lastname = args.first[:lastname]
+    @key = args.first[:key]
     super *args
   end
 
   def validate
-    validates_presence [:key, :fullname, :unit, :library_key]
+    validates_presence [:key, :firstname, :lastname, :unit, :library_key]
     validates_unique :z303_rec_key
   end
 
@@ -28,18 +36,24 @@ class Account < Sequel::Model(:z303)
   alias_method :key, :z303_rec_key
   alias_method :key=, :z303_rec_key=
 
-  def z303_name_key=(string)
-    length = key.nil? ? 50 : 38
-    super blank_spaces_as_suffix(string.to_s.downcase,length) + key.to_s
+  def z303_name=(string)
+    super [@lastname, string].join(', ').upcase
   end
-  alias_method :fullname, :z303_name_key
-  alias_method :fullname=, :z303_name_key=
+  alias_method :fullname, :z303_name
+  alias_method :firstname=, :z303_name=
 
-  def z303_field_1=(string)
+  def z303_name_key=(string)
+    length = @key.nil? ? 50 : 38
+    super blank_spaces_as_suffix([string, @firstname].join(' ').downcase,length) + @key.to_s
+  end
+  alias_method :fullname_key, :z303_name_key
+  alias_method :lastname=, :z303_name_key=
+
+  def z303_field_2=(string)
     super string.to_s.upcase
   end
-  alias_method :unit, :z303_field_1
-  alias_method :unit=, :z303_field_1=
+  alias_method :unit, :z303_field_2
+  alias_method :unit=, :z303_field_2=
 
   def z303_field_3=(string)
     super string.to_s.upcase
