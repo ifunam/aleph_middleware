@@ -11,13 +11,17 @@ class User
 
   attr_accessor :key, :firstname, :lastname, :unit, :academic_responsible, :academic_level,
                 :location, :settlement, :municipality, :state, :country, :city,
-                :zipcode, :email, :phone, :expiry_date, :image, :new_record, :id
+                :zipcode, :email, :phone, :expiry_date, :image, :new_record, :id,
+                :type
 
   extend CarrierWave::Mount
   mount_uploader :image, ImageUploader
 
   validates_presence_of :key, :firstname, :lastname, :unit, :academic_level, :location,
-                        :country, :city, :zipcode, :email, :phone, :expiry_date
+                        :country, :city, :zipcode, :email, :phone, :expiry_date, :type
+  # type:
+  #        IN => Investigadores(01), AC => Académicos(02), ES => Estudiantes(03),
+  #        AD => Administrativo(04), IT => Interbibliotecario(05), EC => Encuadernación(06)
 
   def self.first_by_key(key)
     @user = new(:new_record => false, :key => key)
@@ -112,16 +116,20 @@ class User
   end
 
   def keychain_attributes
-    { :key => key, :password => key }
+    { :key => key, :password => key, :type => type }
   end
 
   def new_keychain(verification_type)
     KeyChain.new keychain_attributes.merge(:verification_type => verification_type)
   end
 
+  def status
+    { 'IN' => '01', 'AC' => '02', 'ES' => '03', 'AD' => '04', 'IT' => '05', 'EC' => '06' }[type]
+  end
+
   def vigency_attributes
-    { :key => key, :expiry_date => expiry_date, :unit => unit,
-      :academic_responsible => academic_responsible }
+    { :key => key, :expiry_date => expiry_date, :unit => unit, :type => type,
+      :status => status, :academic_responsible => academic_responsible }
   end
 
   def new_vigency(suffix_key)

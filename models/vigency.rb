@@ -11,7 +11,7 @@ class Vigency < Sequel::Model(:z305)
   plugin :validation_helpers
   include Aleph::ColumnHelpers
 
-  attr_accessor :key, :key_suffix, :expiry_date, :unit, :academic_responsible
+  attr_accessor :key, :key_suffix, :expiry_date, :unit, :academic_responsible, :status, :type
   set_primary_key :z305_rec_key
 
   def initialize(*args)
@@ -45,4 +45,9 @@ class Vigency < Sequel::Model(:z305)
   alias_method :academic_responsible, :z305_field_3
   alias_method :academic_responsible=, :z305_field_3=
 
+  alias_method :type, :z305_bor_type
+  alias_method :type=, :z305_bor_type=
+
+  alias_method :status, :z305_bor_status
+  alias_method :status=, :z305_bor_status=
 end
