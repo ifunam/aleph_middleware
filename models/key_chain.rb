@@ -19,7 +19,7 @@ class KeyChain < Sequel::Model(:z308)
   end
 
   def initialize(*args)
-    defaults = {:z308_status => 'AC', :z308_encryption => 'N' }
+    defaults = { :z308_encryption => 'N' }
     args.first.merge!(defaults) if args.first.is_a? Hash
     @verification_type = args.first[:verification_type] if args.first.is_a? Hash and args.first.has_key? :verification_type
     super *args
