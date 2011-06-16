@@ -6,7 +6,7 @@ set :user, "deployer"
 set :deploy_to, "/var/sinatra/#{application}"
 
 set :scm, :git
-set :repository,  "git://github.com/ifunam/aleph_middleware.git"
+set :repository,  "git@github.com:ifunam/aleph_middleware.git"
 set :branch, "master"
 
 default_run_options[:pty] = true
