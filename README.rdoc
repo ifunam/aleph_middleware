@@ -7,7 +7,7 @@
 == Deploy your server
 
   $ cd aleph_middleware
-  #edit config/deploy.rb
+  # edit config/deploy.rb
 
   $ bundle install
   $ cap deploy
@@ -25,10 +25,10 @@ This application requires oracle instantclient 1.x, sqlite 3.x, ruby 1.8.x and b
 
 == To INSERT a new user
 
-host = 'yourserver.domain.com'
-port = 80
-resource =  RestClient::Resource.new "http://#{host}:#{port}/users.xml", :headers => {'X_ALEPH_TOKEN' => 'd4a657ef9715c3477ffcb9176458ddb1cbd00264acfaafcafbf6fe95a5d3785e'}
-resource.post :user => {
+  host = 'yourserver.domain.com'
+  port = 80
+  resource =  RestClient::Resource.new "http://#{host}:#{port}/users.xml", :headers => {'X_ALEPH_TOKEN' => 'd4a657ef9715c3477ffcb9176458ddb1cbd00264acfaafcafbf6fe95a5d3785e'}
+  resource.post :user => {
                  :key => 'E0000100', :firstname => 'Pedro', :lastname => 'López',
                  :unit => 'Apoyo', :academic_level => 'Licenciatura',
                  :location => 'Av. del Viento 150 Edif 7-1', :country => 'Mexico',
