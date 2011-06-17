@@ -1,0 +1,69 @@
+= How to install Aleph Middleware
+
+== Get the source code
+
+  $ git clone git://github.com/ifunam/aleph_middleware.git
+
+== Deploy your server
+
+  $ cd aleph_middleware
+  #edit config/deploy.rb
+
+  $ bundle install
+  $ cap deploy
+
+== Configure the app to run with mod_passenger o run as standalone
+
+== Notes
+
+This application requires oracle instantclient 1.x, sqlite 3.x, ruby 1.8.x and bundler 1.x.x
+
+
+
+= How to do CRUD for Aleph users using RestClient
+
+
+== To INSERT a new user
+
+host = 'yourserver.domain.com'
+port = 80
+resource =  RestClient::Resource.new "http://#{host}:#{port}/users.xml", :headers => {'X_ALEPH_TOKEN' => 'd4a657ef9715c3477ffcb9176458ddb1cbd00264acfaafcafbf6fe95a5d3785e'}
+resource.post :user => {
+                 :key => 'E0000100', :firstname => 'Pedro', :lastname => 'López',
+                 :unit => 'Apoyo', :academic_level => 'Licenciatura',
+                 :location => 'Av. del Viento 150 Edif 7-1', :country => 'Mexico',
+                 :city => 'Ciudad de Mexico', :zipcode => '04900', 
+                 :email => 'pedro@domain.com', :expiry_date => '20111231',
+                 :phone => '55225002', :type => 'ES',
+                 :image => File.new('somepic.jpg')
+             }
+
+== To UPDATE an existent user:
+
+  host = 'yourserver.domain.com'
+  port = 80
+  resource =  RestClient::Resource.new "http://#{host}:#{port}/users/E0000100.xml", :headers => {'X_ALEPH_TOKEN' => 'd4a657ef9715c3477ffcb9176458ddb1cbd00264acfaafcafbf6fe95a5d3785e'}
+  resource.put :user => {
+                 :firstname => 'Pedro', :lastname => 'López',
+                 :unit => 'Apoyo', :academic_level => 'Licenciatura',
+                 :location => 'Av. del Viento 150 Edif 7-1', :country => 'Mexico',
+                 :city => 'Ciudad de Mexico', :zipcode => '04900', 
+                 :email => 'peter@domain.com', :expiry_date => '20121231',
+                 :phone => '55225002', :type => 'ES',
+                 :image => File.new('somepic.jpg')
+             }
+
+
+== To GET an existent user
+
+  host = 'yourserver.domain.com'
+  port = 80
+  resource =  RestClient::Resource.new "http://#{host}:#{port}/users/E0000100.xml", :headers => {'X_ALEPH_TOKEN' => 'd4a657ef9715c3477ffcb9176458ddb1cbd00264acfaafcafbf6fe95a5d3785e'}
+  resource.get
+
+== To DELETE an existent user
+
+  host = 'yourserver.domain.com'
+  port = 80
+  resource =  RestClient::Resource.new "http://#{host}:#{port}/users/E0000100.xml", :headers => {'X_ALEPH_TOKEN' => 'd4a657ef9715c3477ffcb9176458ddb1cbd00264acfaafcafbf6fe95a5d3785e'}
+  resource.delete
